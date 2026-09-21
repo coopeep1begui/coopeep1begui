@@ -328,7 +328,8 @@
         <input type="text" id="sheetUrlInput" placeholder="https://docs.google.com/spreadsheets/d/XXXX/edit">
       </div>
       <button class="btn btn-secondary" id="btnGuardarConfig" style="margin-top:8px">Guardar configuración</button>
-      <p style="margin-top:10px;font-size:0.8rem">La configuración se guarda en este navegador (localStorage).</p>
+      <p style="margin-top:10px;font-size:0.8rem">La configuración se guarda en este navegador (localStorage).<br>
+      <strong>Nota CORS:</strong> Esta versión usa <code>text/plain</code> para evitar errores de CORS con GitHub Pages.</p>
     </div>
 
     <!-- Paso 1: Buscar sobre -->
@@ -491,9 +492,10 @@
       foto.value = '';
 
       try {
+        // Usamos text/plain para evitar el preflight OPTIONS (CORS con Apps Script)
         const res = await fetch(WEB_APP_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({ action: 'getAlumno', sobre: Number(sobre) })
         });
         const data = await res.json();
@@ -657,9 +659,10 @@
       };
 
       try {
+        // Usamos text/plain para evitar el preflight OPTIONS (CORS con Apps Script)
         const res = await fetch(WEB_APP_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload)
         });
         const data = await res.json();
