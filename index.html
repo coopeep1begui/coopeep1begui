@@ -1,15 +1,17 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control de Pagos - Cuota Social</title>
-    <!-- Tailwind CSS para diseño rápido (Modificado) -->
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
-<!-- PapaParse para leer el CSV de Google Sheets (Modificado) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-
+    <!-- Tailwind CSS para diseño rápido -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- PapaParse para leer el CSV de Google Sheets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans">
 
@@ -17,13 +19,24 @@
         <header class="mb-8 text-center">
             <h1 class="text-3xl font-bold text-blue-700">Registro de Cuotas Sociales</h1>
             <p class="text-gray-600 mt-2">Haz clic en cualquier tarjeta para ver el comprobante y los datos de los tutores.</p>
+            
             <input type="text" id="search" placeholder="Buscar por alumno o grado..." class="mt-4 p-2 w-full max-w-md border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
         </header>
 
+        <!-- Sección de Totalizadores por Día -->
+        <section class="mb-8 bg-white p-5 rounded-xl shadow-md border border-gray-200 max-w-4xl mx-auto">
+            <h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                📊 Recaudación Diaria
+            </h2>
+            <div id="totals-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <p class="text-gray-500 text-sm col-span-full">Calculando totales...</p>
+            </div>
+        </section>
+
         <!-- Contenedor de Tarjetas -->
-        <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <main id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <p class="text-center col-span-full text-gray-500">Cargando registros...</p>
-        </div>
+        </main>
     </div>
 
     <!-- Modal Detalle (Oculto por defecto) -->
@@ -35,10 +48,9 @@
     </div>
 
     <script>
-        // REEMPLAZA ESTO CON EL ID DE TU GOOGLE SHEET
+        // TU ID CORRECTO DE GOOGLE SHEET
         const SHEET_ID = '1obPI6ALAoP7imrCi2gMD5sC9Ri6wzzx5mc8EHcQA6Ek'; 
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Pagos`;
-
 
         let dataRecords = [];
 
@@ -51,7 +63,7 @@
                     skipEmptyLines: true,
                     complete: (results) => {
                         dataRecords = results.data;
-                        renderCards(dataRecords);
+                        renderPage(dataRecords);
                     }
                 });
             })
@@ -59,6 +71,12 @@
                 document.getElementById('cards-container').innerHTML = '<p class="text-red-500 text-center col-span-full">Error al cargar los datos.</p>';
                 console.error(err);
             });
+
+        // Función principal para renderizar toda la interfaz
+        function renderPage(records) {
+            renderCards(records);
+            calculateDailyTotals(records);
+        }
 
         // Renderizar Tarjetas
         function renderCards(records) {
@@ -71,15 +89,20 @@
             }
 
             records.forEach((row, index) => {
+                // Encontrar el índice real en el array maestro (dataRecords) para el modal
+                const realIndex = dataRecords.findIndex(r => r === row);
+
                 const card = document.createElement('div');
                 card.className = "bg-white p-5 rounded-xl shadow-md border border-gray-200 hover:shadow-xl transition cursor-pointer flex flex-col justify-between";
-                card.onclick = () => openModal(index);
+                card.onclick = () => openModal(realIndex);
+
+                const fechaCorta = row.Timestamp ? row.Timestamp.split(' ')[0] : 'S/F';
 
                 card.innerHTML = `
                     <div>
                         <div class="flex justify-between items-start mb-2">
                             <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">${row.Grado || 'N/A'}</span>
-                            <span class="text-xs text-gray-400">${row.Timestamp ? row.Timestamp.split(' ')[0] : ''}</span>
+                            <span class="text-xs text-gray-400">${fechaCorta}</span>
                         </div>
                         <h2 class="text-xl font-bold text-gray-900 mb-1">${row.Alumno || 'Sin Nombre'}</h2>
                         <p class="text-sm text-gray-600 mb-4"><strong>Meses:</strong> ${row.Meses || '-'}</p>
@@ -93,14 +116,61 @@
             });
         }
 
-        // Buscador en tiempo real
+        // Calcular y mostrar totales por día
+        function calculateDailyTotals(records) {
+            const totalsContainer = document.getElementById('totals-container');
+            totalsContainer.innerHTML = '';
+
+            if (records.length === 0) {
+                totalsContainer.innerHTML = '<p class="text-gray-500 text-sm col-span-full">No hay montos para calcular.</p>';
+                return;
+            }
+
+            const dailyMap = {};
+
+            records.forEach(row => {
+                // Extrae solo la fecha (DD/MM/AAAA) ignorando la hora
+                const fecha = row.Timestamp ? row.Timestamp.split(' ')[0] : 'Sin Fecha';
+                
+                // Limpia el valor de dinero quitando espacios o caracteres extraños, y lo convierte a número
+                const monto = parseFloat(String(row.Dinero).replace(/[^0-9.-]+/g, "")) || 0;
+
+                if (!dailyMap[fecha]) {
+                    dailyMap[fecha] = 0;
+                }
+                dailyMap[fecha] += monto;
+            });
+
+            // Ordenar las fechas de la más reciente a la más antigua
+            const sortedDates = Object.keys(dailyMap).sort((a, b) => {
+                const partsA = a.split('/');
+                const partsB = b.split('/');
+                if(partsA.length === 3 && partsB.length === 3) {
+                    return new Date(partsB[2], partsB[1] - 1, partsB[0]) - new Date(partsA[2], partsA[1] - 1, partsA[0]);
+                }
+                return b.localeCompare(a);
+            });
+
+            // Generar los bloques visuales de los totales
+            sortedDates.forEach(fecha => {
+                const totalBox = document.createElement('div');
+                totalBox.className = "bg-gray-50 border border-gray-200 p-3 rounded-lg text-center shadow-xs animate-fade-in";
+                totalBox.innerHTML = `
+                    <p class="text-xs text-gray-500 font-medium">${fecha}</p>
+                    <p class="text-base font-bold text-green-600">$${dailyMap[fecha].toLocaleString('es-AR')}</p>
+                `;
+                totalsContainer.appendChild(totalBox);
+            });
+        }
+
+        // Buscador en tiempo real (también filtra los totales del día según lo que busques)
         document.getElementById('search').addEventListener('input', (e) => {
             const text = e.target.value.toLowerCase();
             const filtered = dataRecords.filter(row => 
                 (row.Alumno && row.Alumno.toLowerCase().includes(text)) || 
                 (row.Grado && row.Grado.toLowerCase().includes(text))
             );
-            renderCards(filtered);
+            renderPage(filtered);
         });
 
         // Abrir Modal con detalle y foto
@@ -109,9 +179,8 @@
             const modal = document.getElementById('modal');
             const content = document.getElementById('modal-content');
 
-            // Validar si existe URL de foto, si no, usar un placeholder o aviso
             const fotoHtml = row.FotoURL 
-                ? `<div class="mb-6"><p class="font-semibold text-gray-700 mb-2">Comprobante / Foto:</p><img src="${row.FotoURL}" alt="Foto Comprobante" class="w-full max-h-64 object-contain rounded-lg border bg-gray-50"></div>`
+                ? `<div class="mb-6"><p class="font-semibold text-gray-700 mb-2">Comprobante / Foto:</p><a href="${row.FotoURL}" target="_blank"><img src="${row.FotoURL}" alt="Foto Comprobante" class="w-full max-h-64 object-contain rounded-lg border bg-gray-50 hover:opacity-90 transition"></a><p class="text-xs text-center text-gray-400 mt-1">Haz clic en la imagen para abrir en tamaño completo</p></div>`
                 : `<div class="mb-6 p-4 bg-gray-100 text-center rounded-lg text-gray-500">No hay foto adjunta en este registro.</div>`;
 
             content.innerHTML = `
@@ -158,7 +227,7 @@
             `;
 
             modal.classList.remove('hidden');
-            document.body.classList.add('overflow-hidden'); // Evita scroll de fondo
+            document.body.classList.add('overflow-hidden');
         }
 
         function closeModal() {
@@ -168,3 +237,5 @@
     </script>
 </body>
 </html>
+
+        
