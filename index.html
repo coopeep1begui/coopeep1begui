@@ -1,727 +1,167 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Registro de Pagos Cooperadora - Escuela N° 1 Berazategui</title>
-  <style>
-    :root {
-      --primary: #1a73e8;
-      --primary-dark: #1557b0;
-      --success: #0d904f;
-      --danger: #d93025;
-      --bg: #f8f9fa;
-      --card: #ffffff;
-      --text: #202124;
-      --muted: #5f6368;
-      --border: #dadce0;
-      --radius: 12px;
-      --shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-      min-height: 100vh;
-      padding: 16px;
-    }
-
-    .container {
-      max-width: 520px;
-      margin: 0 auto;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 24px;
-      padding: 16px 0;
-    }
-
-    header h1 {
-      font-size: 1.35rem;
-      font-weight: 600;
-      color: var(--primary);
-      margin-bottom: 4px;
-    }
-
-    header p {
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 20px;
-      margin-bottom: 16px;
-    }
-
-    .card h2 {
-      font-size: 1.05rem;
-      font-weight: 600;
-      margin-bottom: 16px;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .card h2 .num {
-      background: var(--primary);
-      color: white;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
-    }
-
-    label {
-      display: block;
-      font-size: 0.875rem;
-      font-weight: 500;
-      margin-bottom: 6px;
-      color: var(--text);
-    }
-
-    label .req {
-      color: var(--danger);
-    }
-
-    input[type="number"],
-    input[type="text"],
-    input[type="file"],
-    textarea {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.15s, box-shadow 0.15s;
-      background: #fff;
-    }
-
-    input:focus,
-    textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
-    }
-
-    textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-
-    .input-group {
-      margin-bottom: 14px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.1s;
-      width: 100%;
-    }
-
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
-    }
-
-    .btn-primary:disabled {
-      background: #a8c7fa;
-      cursor: not-allowed;
-    }
-
-    .btn-secondary {
-      background: #e8f0fe;
-      color: var(--primary);
-    }
-
-    .btn-secondary:hover {
-      background: #d2e3fc;
-    }
-
-    .btn-success {
-      background: var(--success);
-      color: white;
-    }
-
-    .btn-success:hover {
-      background: #0b7a42;
-    }
-
-    .info-box {
-      background: #e8f0fe;
-      border-radius: 8px;
-      padding: 14px 16px;
-      margin: 12px 0;
-    }
-
-    .info-box p {
-      margin: 4px 0;
-      font-size: 0.95rem;
-    }
-
-    .info-box strong {
-      color: var(--primary);
-    }
-
-    #previewFoto {
-      margin-top: 10px;
-      text-align: center;
-    }
-
-    #previewFoto img {
-      max-width: 100%;
-      max-height: 220px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-
-    .mensaje {
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin-top: 12px;
-      font-size: 0.95rem;
-      display: none;
-    }
-
-    .mensaje.ok {
-      background: #e6f4ea;
-      color: #137333;
-      display: block;
-    }
-
-    .mensaje.error {
-      background: #fce8e6;
-      color: #c5221f;
-      display: block;
-    }
-
-    .mensaje.info {
-      background: #e8f0fe;
-      color: #1967d2;
-      display: block;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .loading {
-      opacity: 0.6;
-      pointer-events: none;
-    }
-
-    .spinner {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .config-box {
-      background: #fff3cd;
-      border: 1px solid #ffc107;
-      border-radius: 8px;
-      padding: 14px;
-      margin-bottom: 20px;
-      font-size: 0.85rem;
-    }
-
-    .config-box h3 {
-      font-size: 0.95rem;
-      margin-bottom: 8px;
-      color: #856404;
-    }
-
-    .config-box code {
-      background: #fff;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      word-break: break-all;
-    }
-
-    .foto-existente {
-      margin-top: 8px;
-      font-size: 0.85rem;
-    }
-
-    .foto-existente a {
-      color: var(--primary);
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 24px;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    @media (min-width: 600px) {
-      body {
-        padding: 24px;
-      }
-      header h1 {
-        font-size: 1.5rem;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Pagos - Cuota Social</title>
+    <!-- Tailwind CSS para diseño rápido -->
+    <script src="https://jsdelivr.net"></script>
+    <!-- PapaParse para leer el CSV de Google Sheets -->
+    <script src="https://cloudflare.com"></script>
 </head>
-<body>
-  <div class="container">
-    <header>
-      <h1>📋 Registro de Pagos Cooperadora</h1>
-      <p>Escuela N° 1 de Berazategui — Campaña por sobres</p>
-    </header>
+<body class="bg-gray-100 text-gray-800 font-sans">
 
-    <!-- Caja de configuración (ocultar cuando esté listo) -->
-    <div class="config-box" id="configBox">
-      <h3>⚙️ Configuración necesaria (solo la primera vez)</h3>
-      <p>1. Creá un proyecto en <a href="https://script.google.com" target="_blank">script.google.com</a> y pegá el código del archivo <code>AppsScript-backend.gs</code>.</p>
-      <p>2. Reemplazá <code>SPREADSHEET_ID</code> por el ID de tu hoja de cálculo.</p>
-      <p>3. Implementá como aplicación web (Ejecutar como: Yo / Quién tiene acceso: Cualquiera).</p>
-      <p>4. Pegá la URL del Web App aquí abajo y la URL de la hoja:</p>
-      <div class="input-group" style="margin-top:10px">
-        <label>URL del Web App de Apps Script</label>
-        <input type="text" id="webAppUrlInput" placeholder="https://script.google.com/macros/s/..../exec">
-      </div>
-      <div class="input-group">
-        <label>URL de la hoja de cálculo (para abrir)</label>
-        <input type="text" id="sheetUrlInput" placeholder="https://docs.google.com/spreadsheets/d/XXXX/edit">
-      </div>
-      <button class="btn btn-secondary" id="btnGuardarConfig" style="margin-top:8px">Guardar configuración</button>
-      <p style="margin-top:10px;font-size:0.8rem">La configuración se guarda en este navegador (localStorage).<br>
-      <strong>Nota CORS:</strong> Esta versión usa <code>text/plain</code> para evitar errores de CORS con GitHub Pages.</p>
+    <div class="container mx-auto p-6">
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-blue-700">Registro de Cuotas Sociales</h1>
+            <p class="text-gray-600 mt-2">Haz clic en cualquier tarjeta para ver el comprobante y los datos de los tutores.</p>
+            <input type="text" id="search" placeholder="Buscar por alumno o grado..." class="mt-4 p-2 w-full max-w-md border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </header>
+
+        <!-- Contenedor de Tarjetas -->
+        <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <p class="text-center col-span-full text-gray-500">Cargando registros...</p>
+        </div>
     </div>
 
-    <!-- Paso 1: Buscar sobre -->
-    <div class="card">
-      <h2><span class="num">1</span> Buscar sobre</h2>
-      <div class="input-group">
-        <label for="sobreInput">Número de sobre (1 a 649)</label>
-        <input type="number" id="sobreInput" min="1" max="649" placeholder="Ej: 127" inputmode="numeric">
-      </div>
-      <button class="btn btn-primary" id="btnBuscar">Buscar alumno</button>
-
-      <div id="infoAlumno" class="hidden">
-        <div class="info-box">
-          <p><strong>Alumno:</strong> <span id="nombreAlumno">—</span></p>
-          <p><strong>Grado:</strong> <span id="gradoAlumno">—</span></p>
+    <!-- Modal Detalle (Oculto por defecto) -->
+    <div id="modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div class="bg-white rounded-xl max-w-2xl w-full p-6 relative max-h-[90vh] overflow-y-auto shadow-2xl">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+            <div id="modal-content"></div>
         </div>
-        <button class="btn btn-secondary" id="btnAbrirHoja" style="margin-top:10px">
-          📋 Abrir hoja de cálculo y copiar nº de sobre
-        </button>
-      </div>
     </div>
 
-    <!-- Paso 2: Registrar pago -->
-    <div class="card hidden" id="seccionRegistro">
-      <h2><span class="num">2</span> Registrar / Actualizar pago</h2>
-      <form id="formPago">
-        <div class="input-group">
-          <label for="dinero">Dinero depositado ($)<span class="req">*</span></label>
-          <input type="number" id="dinero" step="0.01" min="0" placeholder="Ej: 5000" required>
-        </div>
-        <div class="input-group">
-          <label for="meses">Cantidad de meses declarados<span class="req">*</span></label>
-          <input type="number" id="meses" min="1" max="12" placeholder="Ej: 3" required>
-        </div>
-        <div class="input-group">
-          <label for="tutor1">Tutor 1 declarado</label>
-          <input type="text" id="tutor1" placeholder="Nombre y apellido">
-        </div>
-        <div class="input-group">
-          <label for="tutor2">Tutor 2 declarado</label>
-          <input type="text" id="tutor2" placeholder="Nombre y apellido">
-        </div>
-        <div class="input-group">
-          <label for="domicilio">Domicilio declarado</label>
-          <input type="text" id="domicilio" placeholder="Calle, número, localidad">
-        </div>
-        <div class="input-group">
-          <label for="hermanos">Hermanos en la escuela declarados</label>
-          <textarea id="hermanos" placeholder="Nombres y grados de los hermanos (uno por línea)"></textarea>
-        </div>
-        <div class="input-group">
-          <label for="foto">Foto del sobre <span id="fotoReq" class="req">*</span></label>
-          <input type="file" id="foto" accept="image/*" capture="environment">
-          <div id="fotoExistente" class="foto-existente hidden"></div>
-          <div id="previewFoto"></div>
-        </div>
-        <button type="submit" class="btn btn-success" id="btnRegistrar">
-          Guardar pago
-        </button>
-      </form>
-      <div id="mensaje" class="mensaje"></div>
-    </div>
+    <script>
+        // REEMPLAZA ESTO CON EL ID DE TU GOOGLE SHEET
+        const SHEET_ID = 'TU_ID_DE_GOOGLE_SHEET_AQUI'; 
+        const SHEET_URL = `https://google.com{SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Pagos`;
 
-    <footer>
-      Escuela N° 1 Berazategui · Cooperadora
-    </footer>
-  </div>
+        let dataRecords = [];
 
-  <script>
-    // ============================================================
-    // CONFIGURACIÓN (se guarda en localStorage)
-    // ============================================================
-    let WEB_APP_URL = localStorage.getItem('coop_webAppUrl') || '';
-    let SPREADSHEET_URL = localStorage.getItem('coop_sheetUrl') || '';
+        // Obtener datos de la hoja
+        fetch(SHEET_URL)
+            .then(res => res.text())
+            .then(csvText => {
+                Papa.parse(csvText, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: (results) => {
+                        dataRecords = results.data;
+                        renderCards(dataRecords);
+                    }
+                });
+            })
+            .catch(err => {
+                document.getElementById('cards-container').innerHTML = '<p class="text-red-500 text-center col-span-full">Error al cargar los datos.</p>';
+                console.error(err);
+            });
 
-    // Estado actual
-    let currentSobre = null;
-    let currentAlumno = null;
-    let currentGrado = null;
-    let currentPago = null;
-    let fotoBase64 = null;
-    let fotoMime = 'image/jpeg';
+        // Renderizar Tarjetas
+        function renderCards(records) {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
 
-    // Elementos
-    const configBox = document.getElementById('configBox');
-    const webAppUrlInput = document.getElementById('webAppUrlInput');
-    const sheetUrlInput = document.getElementById('sheetUrlInput');
-    const btnGuardarConfig = document.getElementById('btnGuardarConfig');
-    const sobreInput = document.getElementById('sobreInput');
-    const btnBuscar = document.getElementById('btnBuscar');
-    const infoAlumno = document.getElementById('infoAlumno');
-    const nombreAlumno = document.getElementById('nombreAlumno');
-    const gradoAlumno = document.getElementById('gradoAlumno');
-    const btnAbrirHoja = document.getElementById('btnAbrirHoja');
-    const seccionRegistro = document.getElementById('seccionRegistro');
-    const formPago = document.getElementById('formPago');
-    const dinero = document.getElementById('dinero');
-    const meses = document.getElementById('meses');
-    const tutor1 = document.getElementById('tutor1');
-    const tutor2 = document.getElementById('tutor2');
-    const domicilio = document.getElementById('domicilio');
-    const hermanos = document.getElementById('hermanos');
-    const foto = document.getElementById('foto');
-    const fotoReq = document.getElementById('fotoReq');
-    const fotoExistente = document.getElementById('fotoExistente');
-    const previewFoto = document.getElementById('previewFoto');
-    const btnRegistrar = document.getElementById('btnRegistrar');
-    const mensaje = document.getElementById('mensaje');
-
-    // Inicializar config
-    if (WEB_APP_URL && SPREADSHEET_URL) {
-      configBox.classList.add('hidden');
-    } else {
-      webAppUrlInput.value = WEB_APP_URL;
-      sheetUrlInput.value = SPREADSHEET_URL;
-    }
-
-    btnGuardarConfig.addEventListener('click', () => {
-      WEB_APP_URL = webAppUrlInput.value.trim();
-      SPREADSHEET_URL = sheetUrlInput.value.trim();
-      if (!WEB_APP_URL || !SPREADSHEET_URL) {
-        alert('Completá ambas URLs');
-        return;
-      }
-      localStorage.setItem('coop_webAppUrl', WEB_APP_URL);
-      localStorage.setItem('coop_sheetUrl', SPREADSHEET_URL);
-      configBox.classList.add('hidden');
-      showMensaje('Configuración guardada. Ya podés usar la aplicación.', 'ok');
-    });
-
-    // ============================================================
-    // BUSCAR ALUMNO
-    // ============================================================
-    btnBuscar.addEventListener('click', buscarAlumno);
-    sobreInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        buscarAlumno();
-      }
-    });
-
-    async function buscarAlumno() {
-      const sobre = sobreInput.value.trim();
-      if (!sobre || isNaN(sobre) || sobre < 1 || sobre > 649) {
-        showMensaje('Ingresá un número de sobre válido (1 a 649)', 'error');
-        return;
-      }
-      if (!WEB_APP_URL) {
-        showMensaje('Primero configurá la URL del Web App (caja amarilla arriba)', 'error');
-        configBox.classList.remove('hidden');
-        return;
-      }
-
-      setLoading(btnBuscar, true);
-      hideMensaje();
-      infoAlumno.classList.add('hidden');
-      seccionRegistro.classList.add('hidden');
-      fotoBase64 = null;
-      previewFoto.innerHTML = '';
-      foto.value = '';
-
-      try {
-        // Usamos text/plain para evitar el preflight OPTIONS (CORS con Apps Script)
-        const res = await fetch(WEB_APP_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'getAlumno', sobre: Number(sobre) })
-        });
-        const data = await res.json();
-
-        if (data.error) {
-          showMensaje(data.error, 'error');
-          return;
-        }
-
-        currentSobre = Number(sobre);
-        currentAlumno = data.alumno;
-        currentGrado = data.grado;
-        currentPago = data.pago || null;
-
-        nombreAlumno.textContent = currentAlumno || '—';
-        gradoAlumno.textContent = currentGrado || '—';
-        infoAlumno.classList.remove('hidden');
-        seccionRegistro.classList.remove('hidden');
-
-        // Prefill form
-        dinero.value = currentPago?.dinero ?? '';
-        meses.value = currentPago?.meses ?? '';
-        tutor1.value = currentPago?.tutor1 ?? '';
-        tutor2.value = currentPago?.tutor2 ?? '';
-        domicilio.value = currentPago?.domicilio ?? '';
-        hermanos.value = currentPago?.hermanos ?? '';
-
-        // Foto existente
-        if (currentPago?.fotoUrl) {
-          fotoExistente.innerHTML = `Ya hay una foto registrada: <a href="${currentPago.fotoUrl}" target="_blank">ver foto</a>. Podés subir una nueva si querés reemplazarla.`;
-          fotoExistente.classList.remove('hidden');
-          fotoReq.classList.add('hidden');
-          foto.removeAttribute('required');
-        } else {
-          fotoExistente.classList.add('hidden');
-          fotoReq.classList.remove('hidden');
-          foto.setAttribute('required', 'required');
-        }
-
-        showMensaje(currentPago ? 'Sobre encontrado. Ya tiene un pago registrado (podés actualizarlo).' : 'Sobre encontrado. Completá los datos del pago.', 'info');
-      } catch (err) {
-        console.error(err);
-        showMensaje('Error de conexión. Verificá la URL del Web App y que esté implementado correctamente.', 'error');
-      } finally {
-        setLoading(btnBuscar, false);
-      }
-    }
-
-    // ============================================================
-    // ABRIR HOJA + COPIAR
-    // ============================================================
-    btnAbrirHoja.addEventListener('click', async () => {
-      if (!currentSobre) return;
-      try {
-        await navigator.clipboard.writeText(String(currentSobre));
-        showMensaje(`Número de sobre ${currentSobre} copiado al portapapeles.`, 'ok');
-      } catch (e) {
-        showMensaje(`No se pudo copiar automáticamente. Número de sobre: ${currentSobre}`, 'info');
-      }
-      if (SPREADSHEET_URL) {
-        window.open(SPREADSHEET_URL, '_blank');
-      } else {
-        alert('Configurá primero la URL de la hoja de cálculo');
-      }
-    });
-
-    // ============================================================
-    // FOTO
-    // ============================================================
-    foto.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) {
-        fotoBase64 = null;
-        previewFoto.innerHTML = '';
-        return;
-      }
-      try {
-        fotoBase64 = await compressImage(file);
-        fotoMime = 'image/jpeg';
-        previewFoto.innerHTML = `<img src="${fotoBase64}" alt="Vista previa del sobre">`;
-      } catch (err) {
-        showMensaje('Error al procesar la imagen', 'error');
-        fotoBase64 = null;
-      }
-    });
-
-    function compressImage(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            let w = img.width;
-            let h = img.height;
-            const maxSize = 1024;
-            if (w > maxSize || h > maxSize) {
-              if (w > h) {
-                h = Math.round(h * maxSize / w);
-                w = maxSize;
-              } else {
-                w = Math.round(w * maxSize / h);
-                h = maxSize;
-              }
+            if(records.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center col-span-full">No se encontraron registros.</p>';
+                return;
             }
-            canvas.width = w;
-            canvas.height = h;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, w, h);
-            resolve(canvas.toDataURL('image/jpeg', 0.72));
-          };
-          img.onerror = reject;
-          img.src = e.target.result;
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    }
 
-    // ============================================================
-    // GUARDAR PAGO
-    // ============================================================
-    formPago.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!currentSobre) return;
+            records.forEach((row, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-xl shadow-md border border-gray-200 hover:shadow-xl transition cursor-pointer flex flex-col justify-between";
+                card.onclick = () => openModal(index);
 
-      const dineroVal = parseFloat(dinero.value);
-      const mesesVal = parseInt(meses.value, 10);
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">${row.Grado || 'N/A'}</span>
+                            <span class="text-xs text-gray-400">${row.Timestamp ? row.Timestamp.split(' ')[0] : ''}</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-900 mb-1">${row.Alumno || 'Sin Nombre'}</h2>
+                        <p class="text-sm text-gray-600 mb-4"><strong>Meses:</strong> ${row.Meses || '-'}</p>
+                    </div>
+                    <div class="border-t pt-3 flex justify-between items-center mt-4">
+                        <span class="text-sm text-gray-500">Sobre: ${row.Sobre || '-'}</span>
+                        <span class="text-lg font-bold text-green-600">$${row.Dinero || '0'}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
 
-      if (isNaN(dineroVal) || dineroVal < 0) {
-        showMensaje('Ingresá un monto válido', 'error');
-        return;
-      }
-      if (isNaN(mesesVal) || mesesVal < 1) {
-        showMensaje('Ingresá la cantidad de meses', 'error');
-        return;
-      }
-
-      // Foto obligatoria solo si no hay una previa
-      if (!fotoBase64 && !currentPago?.fotoUrl) {
-        showMensaje('La foto del sobre es obligatoria', 'error');
-        return;
-      }
-
-      setLoading(btnRegistrar, true);
-      hideMensaje();
-
-      const payload = {
-        action: 'savePago',
-        sobre: currentSobre,
-        alumno: currentAlumno,
-        grado: currentGrado,
-        dinero: dineroVal,
-        meses: mesesVal,
-        tutor1: tutor1.value.trim(),
-        tutor2: tutor2.value.trim(),
-        domicilio: domicilio.value.trim(),
-        hermanos: hermanos.value.trim(),
-        fotoBase64: fotoBase64 || null,
-        fotoMime: fotoMime
-      };
-
-      try {
-        // Usamos text/plain para evitar el preflight OPTIONS (CORS con Apps Script)
-        const res = await fetch(WEB_APP_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
+        // Buscador en tiempo real
+        document.getElementById('search').addEventListener('input', (e) => {
+            const text = e.target.value.toLowerCase();
+            const filtered = dataRecords.filter(row => 
+                (row.Alumno && row.Alumno.toLowerCase().includes(text)) || 
+                (row.Grado && row.Grado.toLowerCase().includes(text))
+            );
+            renderCards(filtered);
         });
-        const data = await res.json();
 
-        if (data.error) {
-          showMensaje(data.error, 'error');
-          return;
+        // Abrir Modal con detalle y foto
+        function openModal(index) {
+            const row = dataRecords[index];
+            const modal = document.getElementById('modal');
+            const content = document.getElementById('modal-content');
+
+            // Validar si existe URL de foto, si no, usar un placeholder o aviso
+            const fotoHtml = row.FotoURL 
+                ? `<div class="mb-6"><p class="font-semibold text-gray-700 mb-2">Comprobante / Foto:</p><img src="${row.FotoURL}" alt="Foto Comprobante" class="w-full max-h-64 object-contain rounded-lg border bg-gray-50"></div>`
+                : `<div class="mb-6 p-4 bg-gray-100 text-center rounded-lg text-gray-500">No hay foto adjunta en este registro.</div>`;
+
+            content.innerHTML = `
+                <h2 class="text-2xl font-bold text-gray-950 mb-4">${row.Alumno}</h2>
+                
+                ${fotoHtml}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm border-t pt-4">
+                    <div>
+                        <h3 class="font-bold text-blue-700 mb-1">Datos del Alumno</h3>
+                        <p><strong>Grado:</strong> ${row.Grado}</p>
+                        <p><strong>DNI:</strong> ${row.DniAlumno}</p>
+                        <p><strong>Domicilio:</strong> ${row.Domicilio}</p>
+                        <p><strong>Hermanos:</strong> ${row.Hermanos || 'No'}</p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-blue-700 mb-1">Detalle del Pago</h3>
+                        <p><strong>Monto:</strong> <span class="text-green-600 font-bold">$${row.Dinero}</span></p>
+                        <p><strong>Meses:</strong> ${row.Meses}</p>
+                        <p><strong>Nº Sobre:</strong> ${row.Sobre}</p>
+                        <p><strong>Fecha de carga:</strong> ${row.Timestamp}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm border-t mt-4 pt-4">
+                    <div>
+                        <h3 class="font-bold text-gray-700 mb-1">Tutor 1</h3>
+                        <p><strong>Nombre:</strong> ${row.Tutor1 || '-'}</p>
+                        <p><strong>DNI:</strong> ${row.DniTutor1 || '-'}</p>
+                        <p><strong>Tel:</strong> ${row.TelTutor1 || '-'}</p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-700 mb-1">Tutor 2</h3>
+                        <p><strong>Nombre:</strong> ${row.Tutor2 || '-'}</p>
+                        <p><strong>DNI:</strong> ${row.DniTutor2 || '-'}</p>
+                        <p><strong>Tel:</strong> ${row.TelTutor2 || '-'}</p>
+                    </div>
+                </div>
+
+                <div class="border-t mt-4 pt-4 text-sm">
+                    <h3 class="font-bold text-gray-700 mb-1">Observaciones</h3>
+                    <p class="text-gray-600 bg-gray-50 p-2 rounded border">${row.Observaciones || 'Sin observaciones.'}</p>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden'); // Evita scroll de fondo
         }
 
-        showMensaje('✅ Pago registrado / actualizado correctamente.', 'ok');
-        // Actualizar estado local
-        currentPago = {
-          dinero: dineroVal,
-          meses: mesesVal,
-          tutor1: payload.tutor1,
-          tutor2: payload.tutor2,
-          domicilio: payload.domicilio,
-          hermanos: payload.hermanos,
-          fotoUrl: data.fotoUrl || currentPago?.fotoUrl
-        };
-        if (data.fotoUrl) {
-          fotoExistente.innerHTML = `Foto actualizada: <a href="${data.fotoUrl}" target="_blank">ver foto</a>`;
-          fotoExistente.classList.remove('hidden');
-          fotoReq.classList.add('hidden');
-          foto.removeAttribute('required');
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
         }
-        // Limpiar input de foto nueva
-        foto.value = '';
-        fotoBase64 = null;
-        // No borramos el preview para que se vea lo que se subió
-      } catch (err) {
-        console.error(err);
-        showMensaje('Error al guardar. Verificá la conexión y la configuración del Web App.', 'error');
-      } finally {
-        setLoading(btnRegistrar, false);
-      }
-    });
-
-    // ============================================================
-    // HELPERS
-    // ============================================================
-    function showMensaje(texto, tipo) {
-      mensaje.textContent = texto;
-      mensaje.className = 'mensaje ' + tipo;
-    }
-    function hideMensaje() {
-      mensaje.className = 'mensaje';
-      mensaje.textContent = '';
-    }
-    function setLoading(btn, loading) {
-      if (loading) {
-        btn.disabled = true;
-        btn.dataset.original = btn.innerHTML;
-        btn.innerHTML = '<span class="spinner"></span> Procesando...';
-      } else {
-        btn.disabled = false;
-        btn.innerHTML = btn.dataset.original || btn.innerHTML;
-      }
-    }
-  </script>
+    </script>
 </body>
 </html>
