@@ -103,7 +103,7 @@
                 return;
             }
 
-            records.forEach((row, index) => {
+            records.reverse().forEach((row, index) => {
                 // Encontrar el índice real en el array maestro (dataRecords) para el modal
                 const realIndex = dataRecords.findIndex(r => r === row);
 
